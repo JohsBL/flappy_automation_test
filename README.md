@@ -56,17 +56,18 @@ roslaunch flappy_automation_code flappy_automation_code_cpp.launch
 A GUI will become visible with the game start screen. For now the automation code does not do anything other than printing out some laser ray information. To start the game and move the bird press the arrow keys. Tapping the up key &uarr; will start the game. You can then add velocity in a wanted direction by pressing the arrow keys &larr;&uarr;&darr;&rarr;. Notice that it is not possible to go backwards and if hitting an obstacle the game stops.
 
 ## Automate Flappy Bird
-Now that we have gotten familiar with the game we want to control Flappy Bird. To do this a python and C++ template has been provided.
+Now that we have gotten familiar with the game we want to control Flappy Bird. To do this a python and C++ template has been provided. 
 
 ### Modifying the code
+The templates are located in the **flappy_automation_code** folder. Be aware that you are not meant to change the files in **flappy_main_game**.         
 
-The templates are located in the **flappy_automation_code** folder.  
 For using python modify the file **flappy_automation_code_node.py** in the **scripts** folder.  
+
 For using C++ modify the files **flappy_automation_code.cpp** in the **src** folder and **flappy_automation_code.hpp** in the **include** folder.
 
 Take your pick.
 
-To get the state of the bird velocity readings and laserscans are published and an acceleration command can be given for actuating the Flappy Bird. In the code callbacks for these topics and examples of how to read the returned messages are provided.
+To get the state of the bird velocity readings and laserscans are published and an acceleration command can be given for actuating the Flappy Bird. Callbacks for these topics and examples of how to read the returned messages is provided in the code.
 
 ### Build and run
 Once the code has been modified run the catkin_make command again,
@@ -77,19 +78,21 @@ catkin_make
 
 Then launch the game as before.
 
-Python,
+For Python,
 ```
 roslaunch flappy_automation_code flappy_automation_code_py.launch
 ```
-C++,
+For C++,
 ```
 roslaunch flappy_automation_code flappy_automation_code_cpp.launch
 ```
 
 ## Handing In
-
+To hand in the game solution please send the relevant files (the ones you changed) in a ZIP file by email.   
 
 ## Other Information
+I hope you will have fun solving this little game. Here is some other helpful information for solving the task. If you have any questions or need other game information either write me or look around in the **flappy_main_game** folder.
+
 Scaling: 1 pixel = 0.01 meter  
 Game and sensor update rates: 30 fps  
 Max acceleration x: 0.1 m/s^2  
