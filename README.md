@@ -91,7 +91,7 @@ roslaunch flappy_automation_code flappy_automation_code_cpp.launch
 To hand in the game solution please send the relevant files (the ones you changed) in a ZIP file by email.   
 
 ## Other Information
-I hope you will have fun solving this little game. Here is some other helpful information for solving the task. If you have any questions or need other game information either write me or look around in the **flappy_main_game** folder.
+I hope you will have fun solving this little game. If you have any questions or need other game information either write me or look around in the **flappy_main_game** folder. Here is some other helpful information for solving the task.
 
 Scaling: 1 pixel = 0.01 meter  
 Game and sensor update rates: 30 fps  
