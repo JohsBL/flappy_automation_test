@@ -1,0 +1,6 @@
+<launch>
+  <!-- launch script for cpp automation of flappy  -->
+
+  <node name="flappy_automation_code" pkg="flappy_automation_code" type="flappy_automation_code_node" output="screen" />
+  <node name="flappy_main_game" pkg="flappy_main_game" type="flappy.py" output="screen" />
+</launch>
