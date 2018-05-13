@@ -22,8 +22,6 @@ SCREENHEIGHT = 512
 # laser specs
 LASERFOV = 90
 LASERRES = 9
-LASERHZ = 30
-ROTATING = 0
 
 # scale pixels to meters
 SCALING = 0.01
@@ -215,7 +213,7 @@ def mainGame(movementInfo):
     #define publishers
     pub_velocity = rospy.Publisher('flappy_vel', Vector3, queue_size=10)
     # create laser
-    laser = Laser(LASERFOV,LASERRES,LASERHZ,SCALING,ROTATING)
+    laser = Laser(LASERFOV,LASERRES,SCALING)
     score = playerIndex = loopIter = 0
     playerIndexGen = movementInfo['playerIndexGen']
     playerx, playery = int(SCREENWIDTH * 0.13), movementInfo['playery']
@@ -362,7 +360,7 @@ def mainGame(movementInfo):
         bitmap = getBitmap(upperPipes,lowerPipes,(basex, BASEY))
         # do raytracing with Laser
         playerMiddle = (playerx + IMAGES['player'][0].get_width() / 2,playery + IMAGES['player'][0].get_height() / 2)
-        laserPoints = laser.scan(playerMiddle,bitmap,pygame.time.get_ticks())
+        laserPoints = laser.scan(playerMiddle,bitmap)
 
         # display
         if DEBUG == 1:
