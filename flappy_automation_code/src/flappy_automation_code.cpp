@@ -28,7 +28,7 @@ void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
   //msg has the format of sensor_msgs::LaserScan
   //print laser angle and range
-  ROS_INFO("Laser range: %f, angle: %f", msg->ranges[0], msg->angle_max);
+  ROS_INFO("Laser range: %f, angle: %f", msg->ranges[0], msg->angle_min);
 }
 
 int main(int argc, char **argv)
