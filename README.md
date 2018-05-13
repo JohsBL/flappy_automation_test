@@ -16,7 +16,8 @@ There are two recommended options for running the game. Either download the Virt
 
 ### Option 1 - VirtualBox
 First download VirtualBox from here [[VirtualBox link]](https://www.virtualbox.org/wiki/Downloads) and install it on your system. Then download the Ubuntu image that we have preconfigured with ROS and the game from here [[Image link]](https://drive.google.com/file/d/17y5v5Xi0sAz9Wx4Ne6FB0_0nxOOnkKVi/view?usp=sharing). Once downloaded add the image to VirtualBox and boot up Ubuntu.
-The username and password are both **FlyaTest** .           
+The username and password are both **FlyaTest** .  
+Be sure to pull the latest version of the code from github before you begin!
 
 ### Option 2 - Adding as ROS package  
 If you already have Ubuntu you can install ROS and setup a workspace as covered here [[ROS install guide]](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).  
