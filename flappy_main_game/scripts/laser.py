@@ -5,35 +5,19 @@ from math import hypot
 #from std.msg import Float32
 
 class Laser:
-    def __init__(self,fov,resolution,hz,scaling,rotating):
+    def __init__(self,fov,resolution,scaling):
         self.fov = fov #degrees
         self.angle_max = math.radians(fov/2.0) # radians
         self.angle_min = -math.radians(fov/2.0) # radians
         self.angle_increment = math.radians(fov/(resolution-1.0)) # radians
         self.resolution = resolution
-        self.sampleTime = 1000*1.0/hz
-        self.range = 355
-        self.time = 0
+        self.range = 355 #pixels
         self.laser_scan_publisher = rospy.Publisher("/flappy_laser_scan", LaserScan, queue_size=10)
         self.scaling = scaling
-        # For rotating Lidar
-        self.rotating = rotating
-        self.ray_counter = 0
 
-    def scan(self,startPoint,bitmap,time):
-        # update with indicated hz
-        #time_diff = time-self.time
-        #if time_diff < self.sampleTime:
-        #    return []
-        #self.time = time-(time_diff % self.sampleTime)
+    def scan(self,startPoint,bitmap):
         pointcloud = []
-        if self.rotating:
-            raysToCast = [self.ray_counter]
-            self.ray_counter += 1
-            if self.ray_counter >= self.resolution:
-                self.ray_counter = 0
-        else:
-            raysToCast = xrange(self.resolution)
+        raysToCast = xrange(self.resolution)
 
         for i in raysToCast:
             # calc endpoint from angle and range
@@ -95,19 +79,11 @@ class Laser:
         scan = LaserScan()
         scan.header.stamp = rospy.Time.now()
         scan.header.frame_id = 'laser_frame'
-
         scan.range_min = 0.0
         scan.range_max = self.range*self.scaling
-
-        if self.rotating:
-            scan.angle_min = self.angle_max-(self.ray_counter*self.angle_increment)
-            scan.angle_max = scan.angle_min
-            scan.angle_increment = 0
-        else:
-            scan.angle_min = self.angle_min
-            scan.angle_max = self.angle_max
-            scan.angle_increment = self.angle_increment
-
+        scan.angle_min = self.angle_min
+        scan.angle_max = self.angle_max
+        scan.angle_increment = self.angle_increment
 
         scan.ranges = []
         scan.intensities = []
