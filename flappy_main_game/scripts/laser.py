@@ -37,7 +37,7 @@ class Laser:
 
         for i in raysToCast:
             # calc endpoint from angle and range
-            angle = self.angle_max-(i*self.angle_increment)
+            angle = self.angle_min+(i*self.angle_increment)
             endPoint = (int(math.cos(angle)*self.range + startPoint[0]),
                 int(-math.sin(angle)*self.range + startPoint[1]))
             #endpoint
