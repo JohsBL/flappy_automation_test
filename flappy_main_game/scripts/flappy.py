@@ -282,8 +282,8 @@ def mainGame(movementInfo):
                     }
 
         #update velocity
-        pipeVelX += playerAccX/FPS
-        playerVelY += playerAccY/FPS
+        pipeVelX += playerAccX
+        playerVelY += playerAccY
 
         #limit velocity
         playerVelY = limitVel(playerVelY,1)
@@ -573,8 +573,8 @@ def controlCallback(data):
     global playerAccX
     global playerAccY
 
-    playerAccX = limitAcceleration(-data.x/SCALING,ACCXLIMIT)
-    playerAccY = limitAcceleration(-data.y/SCALING,ACCYLIMIT)
+    playerAccX = limitAcceleration(-data.x/SCALING,ACCXLIMIT)/(FPS*FPS)
+    playerAccY = limitAcceleration(-data.y/SCALING,ACCYLIMIT)/(FPS*FPS)
     #print(playerAccY)
 
 def limitAcceleration(accUser,limit):
