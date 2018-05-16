@@ -25,8 +25,8 @@ LASERRES = 9
 
 # scale pixels to meters
 SCALING = 0.01
-ACCXLIMIT = 0.1 / SCALING
-ACCYLIMIT = 2.0 / SCALING
+ACCXLIMIT = 3.0
+ACCYLIMIT = 35.0
 VELLIMIT = 10.0 / (SCALING*FPS)
 
 PIPESPACING  = 192
@@ -573,8 +573,8 @@ def controlCallback(data):
     global playerAccX
     global playerAccY
 
-    playerAccX = limitAcceleration(-data.x/SCALING,ACCXLIMIT)/(FPS*FPS)
-    playerAccY = limitAcceleration(-data.y/SCALING,ACCYLIMIT)/(FPS*FPS)
+    playerAccX = limitAcceleration(-data.x,ACCXLIMIT)/(FPS*FPS*SCALING)
+    playerAccY = limitAcceleration(-data.y,ACCYLIMIT)/(FPS*FPS*SCALING)
     #print(playerAccY)
 
 def limitAcceleration(accUser,limit):
