@@ -96,8 +96,8 @@ I hope you will have fun solving this little game. If you have any questions or 
 
 Scaling: 1 pixel = 0.01 meter  
 Game and sensor update rates: 30 fps  
-Max acceleration x: 0.1 m/s^2  
-Max acceleration y: 2.0 m/s^2  
+Max acceleration x: 3.0 m/s^2  
+Max acceleration y: 35.0 m/s^2  
 Axis convention: x &rarr;, y &uarr;  
 [LaserScan message definition](http://docs.ros.org/api/sensor_msgs/html/msg/LaserScan.html)
 
