@@ -96,7 +96,7 @@ I hope you will have fun solving this little game. If you have any questions or 
 
 Scaling: 1 pixel = 0.01 meter  
 Game and sensor update rates: 30 fps 
-The velocity is noise free
+The velocity is noise free  
 Max acceleration x: 3.0 m/s^2  
 Max acceleration y: 35.0 m/s^2  
 Axis convention: x &rarr;, y &uarr;  
