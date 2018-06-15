@@ -15,7 +15,7 @@ Flappy Bird is in trouble again! This time it went into space and landed in an a
 There are two recommended options for running the game. Either download the VirtualBox image that comes with a complete Ubuntu 16.04 setup or add the packages provided from this repository to your own ROS workspace.    
 
 ### Option 1 - VirtualBox
-First download VirtualBox from here [[VirtualBox link]](https://www.virtualbox.org/wiki/Downloads) and install it on your system. Then download the Ubuntu image that we have preconfigured with ROS and the game from here [[Image link]](https://drive.google.com/file/d/17y5v5Xi0sAz9Wx4Ne6FB0_0nxOOnkKVi/view?usp=sharing). Once downloaded add the image to VirtualBox and boot up Ubuntu.
+First download VirtualBox from here [[VirtualBox link]](https://www.virtualbox.org/wiki/Downloads) and install it on your system. Then download the Ubuntu image that we have preconfigured with ROS and the game from here [[Image link]](https://drive.google.com/file/d/1qDaW2qVh9BTEdVVVM2RKJ4msuvuQTQ9j/view). Once downloaded add the image to VirtualBox and boot up Ubuntu.
 The username and password are both **FlyaTest** .  
 Be sure to pull the latest version of the code from github before you begin!
 
