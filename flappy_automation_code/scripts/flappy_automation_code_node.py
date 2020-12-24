@@ -55,9 +55,9 @@ def laserScanCallback(msg):
 
     # msg has the format of sensor_msgs::LaserScan
     # print laser angle and range
-    for k in range(len(msg.ranges):
+    for k in range(len(msg.ranges)):
         print "Laser range: {}, angle: {}".format(msg.ranges[k], msg.angle_min+k*msg.angle_increment)
-        
+
 if __name__ == '__main__':
     try:
         initNode()
