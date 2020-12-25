@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#coding=UTF-8
 import rospy
 import numpy as np
 from sensor_msgs.msg import LaserScan
@@ -33,7 +34,7 @@ def velCallback(msg):
     pub_acc_cmd.publish(Vector3(x,y,0))
 
 def laserScanCallback(msg):
-    """ The callback is the function executed when a message is received. It takes the message as an argument, so it can display information contained in it.
+    """ laserScanCallback is the callback function executed when a message is received. It takes the message as an argument, so it can display and make use of information contained in it.
         Single scan from a planar laser range-finder
 
         float32 angle_min = -45°        # start angle of the scan [rad]
