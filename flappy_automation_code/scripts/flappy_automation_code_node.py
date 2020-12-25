@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#coding=UTF-8
 import rospy
 import numpy as np
 from sensor_msgs.msg import LaserScan
@@ -27,9 +28,9 @@ def initNode():
 def velCallback(msg):
     # msg has the format of geometry_msgs::Vector3
     # Example of publishing acceleration command on velocity velCallback
-    x = 0 # replace the acceleration vector here by something depending on velocity
-    y = 0
-    print "Velocity: x= {}, y={}".format(msg.x, msg.y)
+    x = np.cos(max_range_angle) # replace the acceleration vector here by something depending on velocity
+    y = np.sin(max_range_angle)
+    print "Velocity: x= {}, y={}".format(msg.x, msg.y) # this works
     pub_acc_cmd.publish(Vector3(x,y,0))
 
 def laserScanCallback(msg):
@@ -55,8 +56,10 @@ def laserScanCallback(msg):
 
     # msg has the format of sensor_msgs::LaserScan
     # print laser angle and range
-    for k in range(len(msg.ranges)):
-        print "Laser range: {}, angle: {}".format(msg.ranges[k], msg.angle_min+k*msg.angle_increment)
+    for k in range(len(msg.ranges)): # there a 9 lasers
+        print "Laser range: {}, angle: {}".format(msg.ranges[k], msg.angle_min+k*msg.angle_increment) # this works
+    if np.min(range) < msg.range_max:
+        max_range_angle = np.argmax(msg.range)*msg.angle_increment
 
 if __name__ == '__main__':
     try:
