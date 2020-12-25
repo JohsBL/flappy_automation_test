@@ -28,8 +28,12 @@ def initNode():
 def velCallback(msg):
     # msg has the format of geometry_msgs::Vector3
     # Example of publishing acceleration command on velocity velCallback
-    x = np.cos(max_range_angle) # replace the acceleration vector here by something depending on velocity
-    y = np.sin(max_range_angle)
+    try:
+        x = np.cos(max_range_angle) # replace the acceleration vector here by something depending on velocity
+        y = np.sin(max_range_angle)
+    except:
+        x = 0
+        y = 0
     print "Velocity: x= {}, y={}".format(msg.x, msg.y) # this works
     pub_acc_cmd.publish(Vector3(x,y,0))
 
