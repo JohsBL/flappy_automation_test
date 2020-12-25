@@ -29,8 +29,8 @@ def velCallback(msg):
     # msg has the format of geometry_msgs::Vector3
     # Example of publishing acceleration command on velocity velCallback
     try:
-        x = np.cos(max_range_angle) # replace the acceleration vector here by something depending on velocity
-        y = np.sin(max_range_angle)
+        x = 10*np.cos(max_range_angle) # replace the acceleration vector here by something depending on velocity
+        y = 10*np.sin(max_range_angle)
     except:
         x = 0
         y = 0
