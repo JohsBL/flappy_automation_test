@@ -58,22 +58,21 @@ def getRocksPosition(pointcloud_x, range_min, range_max):
 def getHolePosition(pointcloud_x, pointcloud_y, rocks_x):
     y_distance_to_hole = None
     is_going_through = pointcloud_x - rocks_x > EPSILON
-    print "{}".format(is_going_through)
+    print "Laser rays going through {}".format(is_going_through)
     if np.sum(is_going_through) == 1: # there is one hole, with single laser going through
         y_distance_to_hole = pointcloud_y[is_going_through]    
-    elif np.sum(is_going_through) > 1: # there might be one or  multiple holes
+    elif np.sum(is_going_through) > 1: # there might be one big or multiple holes
         holes_lengths, indices_holes_start = getHolesLength(is_going_through)
+        print "Biggest hole is at laser ray {}".format(indices_holes_start[np.argmax(holes_lengths)])
         y_distance_to_hole = pointcloud_y[indices_holes_start[np.argmax(holes_lengths)]] # take the biggest hole
     return y_distance_to_hole
 
 def getHolesLength(is_going_through):
     is_going_through_diff = np.diff(np.concatenate([[False], is_going_through]).astype('int')) # concatenating a False value at first to make appear a hole start at next line if first value of is_going_through is True
     indices_holes_start = np.where(is_going_through_diff == -1)[0] # is_going_through_diff == -1 means it goes from False to True at that index in is_going_through: a hole starts at this index 
-    if len(indices_holes_start) < 2: # there is only one big hole
-        print "{}".format(len(indices_holes_start))
-        print "{}".format(type(indices_holes_start))
-        raise Warning('There are not multiple holes. Detected holes at laser index {}'.format(indices_holes_start))
-        
+#    if len(indices_holes_start) < 2: # there is only one big hole
+#        raise Warning('There are not multiple holes. Detected holes at laser index {}'.format(indices_holes_start))
+    print "Indices holes start {}".format(indices_holes_start)       
     length_holes = []
     for index_hole_start in indices_holes_start:
         index_hole_stop = None
@@ -82,6 +81,7 @@ def getHolesLength(is_going_through):
             if next_index>=len(is_going_through_diff) or is_going_through_diff[next_index] == 1:
                 index_hole_stop = next_index
                 length_holes.append(index_hole_stop - index_hole_start)
+                print "Index hole starts at laser ray {} and has length {}".format(index_hole_start, length_holes[-1])
             # print "Still in the while loop ... next index = {}".format(next_index)
             next_index += 1
             
