@@ -62,9 +62,10 @@ def getHolePosition(pointcloud_x, pointcloud_y, rocks_x):
     if np.sum(is_going_through) == 1: # there is one hole, with single laser going through
         y_distance_to_hole = pointcloud_y[is_going_through]    
     elif np.sum(is_going_through) > 1: # there might be one big or multiple holes
-        holes_lengths, indices_holes_start = getHolesLength(is_going_through)
-        print "Biggest hole is at laser ray {}".format(indices_holes_start[np.argmax(holes_lengths)])
-        y_distance_to_hole = pointcloud_y[indices_holes_start[np.argmax(holes_lengths)]] # take the biggest hole
+        holes_lengths, indices_holes_start = getHolesLength(is_going_through) # if hole_length >1, it's a gate!
+        if np.max(holes_lengths) > 1:
+            print "Gate is at laser ray {}".format(indices_holes_start[holes_lengths > 1])
+            y_distance_to_hole = pointcloud_y[indices_holes_start[holes_lengths > 1]]
     return y_distance_to_hole
 
 def getHolesLength(is_going_through):

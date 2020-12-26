@@ -117,11 +117,11 @@ def main():
 
     while True:
         # select random background sprites
-        randBg = 0;
+        randBg = 0
         IMAGES['background'] = pygame.image.load(BACKGROUNDS_LIST[randBg]).convert()
 
         # select random player sprites
-        randPlayer = 0;
+        randPlayer = 0
         IMAGES['player'] = (
             pygame.image.load(PLAYERS_LIST[randPlayer][0]).convert_alpha(),
             pygame.image.load(PLAYERS_LIST[randPlayer][1]).convert_alpha(),
