@@ -65,11 +65,17 @@ def getHolePosition(pointcloud_x, pointcloud_y, rocks_x):
         holes_lengths, indices_holes_start = getHolesLength(is_going_through) # if hole_length >1, it's a gate!
         if np.max(holes_lengths) > 1:
             if len(indices_holes_start) > 1: # if there are multiple holes
-                print "Gate is at laser ray {}".format(indices_holes_start[holes_lengths > 1])
-                y_distance_to_hole = pointcloud_y[indices_holes_start[holes_lengths > 1]]
-            else:
-                print "Gate is at laser ray {}".format(indices_holes_start)
-                y_distance_to_hole = pointcloud_y[indices_holes_start]
+                index_gate_start = indices_holes_start[holes_lengths > 1]                
+                print "Gate starts at laser ray {}".format(index_gate_start)
+                index_gate_stop = indices_holes_start[holes_lengths > 1] + holes_lengths[holes_lengths > 1]
+                if index_gate_stop >=8:
+                    index_gate_stop = 8
+                y_distance_to_hole = (pointcloud_y[index_gate_start]+pointcloud_y[index_gate_stop])/2 # middle point
+            else: # there is only one hole
+                index_gate_start = indices_holes_start
+                print "Gate s at laser ray {}".format(indices_holes_start)
+                index_gate_stop = indices_holes_start + holes_lengths
+                y_distance_to_hole = (pointcloud_y[index_gate_start]+pointcloud_y[index_gate_stop])/2 # middle point  
     return y_distance_to_hole
 
 def getHolesLength(is_going_through):
@@ -169,12 +175,14 @@ def laserScanCallback(msg):
         upper_screen_limit_y = getUpperScreenLimit(pointcloud_y, angles, msg.intensities)
         print "Upper screen limit detected at {}m".format(upper_screen_limit_y)
         if abs(upper_screen_limit_y) < 2*EPSILON:
-            pub_acc_cmd.publish(Vector3(0,-upper_screen_limit_y,0))
+            pub_acc_cmd.publish(Vector3(0,-35,0))
+            pub_acc_cmd.publish(Vector3(0,-35,0))
     elif getLowerScreenLimit(pointcloud_y, angles, msg.intensities): # safe guard from lower screen limit
         lower_screen_limit_y = getLowerScreenLimit(pointcloud_y, angles, msg.intensities)
         print "Lower screen limit detected at {}m".format(lower_screen_limit_y)
         if abs(lower_screen_limit_y) < 2*EPSILON:
-            pub_acc_cmd.publish(Vector3(0,-lower_screen_limit_y,0))
+            pub_acc_cmd.publish(Vector3(0,+35,0))
+            pub_acc_cmd.publish(Vector3(0,+35,0))
     elif getRocksPosition(pointcloud_x, msg.range_min, msg.range_max): # rock wall
         rocks_x = getRocksPosition(pointcloud_x, msg.range_min, msg.range_max)
         print "Rock wall detected at {}m".format(round(rocks_x,2))
