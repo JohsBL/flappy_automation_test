@@ -12,8 +12,8 @@ from geometry_msgs.msg import Vector3
 # /flappy_laser_scan for sensor data            
 
 EPSILON = 0.25
-KP = .3 # proportional gain acceleration/distance_to_hole
-KD = -.2 # derivative gain 
+KP_pos = .3 # proportional gain acceleration/distance_to_hole
+KP_vel = .2 # proportional gain velocity/reference velocity
 y_distance_to_hole = 0
 
 def getLowerScreenLimit(pointcloud_y,angles,intensities):
@@ -116,16 +116,26 @@ def initNode():
     rospy.spin()
 
 def velCallback(msg):
-    "The velocity callback is the controller."
+    """The velocity callback is the controller. A cascade control scheme is used: 
+        The velocity is regulated by PID and the position by a P controller, as in PX4."""
     # msg has the format of geometry_msgs::Vector3
+    ### Position controller
+    # reference is 0 distance to hole, so err_pos_y = y_distance_to_hole
 
+    ref_vel_y = Kp_pos*y_distance_to_hole
+
+    ### Velocity controller 
+    # sensors signal
     x_velocity = msg.x
     y_velocity = msg.y
-        
-    #print "Velocity: x= {}, y={}".format(msg.x, msg.y) # this works
-    #print "Acceleration command: x={}, y={}".format(x, y)
-    y_acceleration = KP*y_distance_to_hole + KD*y_velocity
-    print "Controller: error = {}, de/dt = {}".format(y_distance_to_hole, y_velocity)
+
+    # errors
+    #err_vel_x = 
+    err_vel_y = ref_vel_y - y_velocity
+
+    y_acceleration = KP_vel*err_vel_y
+
+    print "Controller: pos. err. = {}, vel. err. = {}".format(y_distance_to_hole, err_vel_y)
     print "y_acceleration = {}".format(y_acceleration)
     
     pub_acc_cmd.publish(Vector3(0,y_acceleration,0))
