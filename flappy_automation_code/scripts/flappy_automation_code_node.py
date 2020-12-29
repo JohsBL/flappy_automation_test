@@ -12,8 +12,8 @@ from geometry_msgs.msg import Vector3
 # /flappy_laser_scan for sensor data            
 
 EPSILON = 0.25
-KP_pos = .3 # proportional gain acceleration/distance_to_hole
-KP_vel = .2 # proportional gain velocity/reference velocity
+KP_pos = .5 # proportional gain acceleration/distance_to_hole
+KP_vel = .5 # proportional gain velocity/reference velocity
 y_distance_to_hole = 0
 
 def getLowerScreenLimit(pointcloud_y,angles,intensities):
@@ -63,19 +63,21 @@ def getHolePosition(pointcloud_x, pointcloud_y, rocks_x):
 
     elif np.sum(is_going_through) > 1: # there might be one big or multiple holes
         holes_lengths, indices_holes_start = getHolesLength(is_going_through) # if hole_length >1, it's a gate!
-        if np.max(holes_lengths) > 1:
+        if np.max(holes_lengths) > 1: # if there is at least one big hole
             if len(indices_holes_start) > 1: # if there are multiple holes
-                index_gate_start = indices_holes_start[holes_lengths > 1]                
+                index_gate_start = indices_holes_start[holes_lengths > 1]   
+                if isinstance(index_gate_start, np.ndarray):
+                    if len(index_gate_start)!=1:
+                        print "Index gate start: {}, type {}".format(index_gate_start, type(index_gate_start))
+                        raise ValueError('Several holes have been gone through by more than one ray. Gate detection algorithm is invalid.')
                 print "Gate starts at laser ray {}".format(index_gate_start)
-                index_gate_stop = indices_holes_start[holes_lengths > 1] + holes_lengths[holes_lengths > 1]
-                if index_gate_stop >=8:
-                    index_gate_stop = 8
-                y_distance_to_hole = (pointcloud_y[index_gate_start]+pointcloud_y[index_gate_stop])/2 # middle point
-            else: # there is only one hole
+                index_gate_stop = indices_holes_start[holes_lengths > 1] + holes_lengths[holes_lengths > 1] - 1 # a hole of length 1 starts and finishes at the same index
+                y_distance_to_hole = (pointcloud_y[index_gate_start] + pointcloud_y[index_gate_stop])/2 # middle point
+            else: # there is only one big hole
                 index_gate_start = indices_holes_start
-                print "Gate s at laser ray {}".format(indices_holes_start)
-                index_gate_stop = indices_holes_start + holes_lengths
-                y_distance_to_hole = (pointcloud_y[index_gate_start]+pointcloud_y[index_gate_stop])/2 # middle point  
+                print "Gate starts at laser ray {}".format(indices_holes_start)
+                index_gate_stop = indices_holes_start + holes_lengths - 1 # a hole of length 1 starts and finishes at the same index
+                y_distance_to_hole = (pointcloud_y[index_gate_start] + pointcloud_y[index_gate_stop])/2 # middle point  
     return y_distance_to_hole
 
 def getHolesLength(is_going_through):
@@ -85,18 +87,19 @@ def getHolesLength(is_going_through):
 #    if len(indices_holes_start) < 2: # there is only one big hole
 #        raise Warning('There are not multiple holes. Detected holes at laser index {}'.format(indices_holes_start))
     print "Indices holes start {}".format(indices_holes_start)       
-    length_holes = []
+    lengths_list = [] # is a list
     for index_hole_start in indices_holes_start:
         index_hole_stop = None
         next_index = index_hole_start + 1
-        while not index_hole_stop: # this ends up being an infinite loop
+        while not index_hole_stop:
             if next_index>=len(is_going_through_diff) or is_going_through_diff[next_index] == -1:
                 index_hole_stop = next_index
-                length_holes.append(index_hole_stop - index_hole_start)
-                print "Index hole starts at laser ray {} and has length {}".format(index_hole_start, length_holes[-1])
+                lengths_list.append(index_hole_stop - index_hole_start)
+                print "Hole starts at laser ray {} and has length {}".format(index_hole_start, lengths_list[-1])
             # print "Still in the while loop ... next index = {}".format(next_index)
             next_index += 1
-            
+    length_holes = np.array(lengths_list)
+    print "Length holes {}".format(length_holes)     
     return length_holes, indices_holes_start
 
 # Publisher for sending acceleration commands to flappy bird
@@ -122,7 +125,7 @@ def velCallback(msg):
     ### Position controller
     # reference is 0 distance to hole, so err_pos_y = y_distance_to_hole
 
-    ref_vel_y = Kp_pos*y_distance_to_hole
+    ref_vel_y = KP_pos*y_distance_to_hole
 
     ### Velocity controller 
     # sensors signal
@@ -181,28 +184,31 @@ def laserScanCallback(msg):
 #     total_spring_force = np.sum(spring_force)    
 #     pub_acc_cmd.publish(Vector3(0,total_spring_force,0))
 #==============================================================================
-    if getUpperScreenLimit(pointcloud_y, angles, msg.intensities): # safe guard from upper screen limit
-        upper_screen_limit_y = getUpperScreenLimit(pointcloud_y, angles, msg.intensities)
-        print "Upper screen limit detected at {}m".format(upper_screen_limit_y)
-        if abs(upper_screen_limit_y) < 2*EPSILON:
-            pub_acc_cmd.publish(Vector3(0,-35,0))
-            pub_acc_cmd.publish(Vector3(0,-35,0))
-    elif getLowerScreenLimit(pointcloud_y, angles, msg.intensities): # safe guard from lower screen limit
-        lower_screen_limit_y = getLowerScreenLimit(pointcloud_y, angles, msg.intensities)
-        print "Lower screen limit detected at {}m".format(lower_screen_limit_y)
-        if abs(lower_screen_limit_y) < 2*EPSILON:
-            pub_acc_cmd.publish(Vector3(0,+35,0))
-            pub_acc_cmd.publish(Vector3(0,+35,0))
-    elif getRocksPosition(pointcloud_x, msg.range_min, msg.range_max): # rock wall
+#==============================================================================
+#     if getUpperScreenLimit(pointcloud_y, angles, msg.intensities): # safe guard from upper screen limit
+#         upper_screen_limit_y = getUpperScreenLimit(pointcloud_y, angles, msg.intensities)
+#         print "Upper screen limit detected at {}m".format(upper_screen_limit_y)
+#         if abs(upper_screen_limit_y) < 2*EPSILON:
+#             pub_acc_cmd.publish(Vector3(0,-35,0))
+#             pub_acc_cmd.publish(Vector3(0,+35,0))
+#     elif getLowerScreenLimit(pointcloud_y, angles, msg.intensities): # safe guard from lower screen limit
+#         lower_screen_limit_y = getLowerScreenLimit(pointcloud_y, angles, msg.intensities)
+#         print "Lower screen limit detected at {}m".format(lower_screen_limit_y)
+#         if abs(lower_screen_limit_y) < 2*EPSILON:
+#             pub_acc_cmd.publish(Vector3(0,+35,0))
+#             pub_acc_cmd.publish(Vector3(0,-35,0))
+#==============================================================================
+    if getRocksPosition(pointcloud_x, msg.range_min, msg.range_max): # rock wall
         rocks_x = getRocksPosition(pointcloud_x, msg.range_min, msg.range_max)
         print "Rock wall detected at {}m".format(round(rocks_x,2))
-        global y_distance_to_hole
-        if getHolePosition(pointcloud_x, pointcloud_y, rocks_x) is not None:
-            y_distance_to_hole = getHolePosition(pointcloud_x, pointcloud_y, rocks_x)
-            print "Gate detected at {}m above".format(y_distance_to_hole)          
-        else:
-            y_distance_to_hole = 0
-            print "Gate not found."
+        if rocks_x > EPSILON: # we only reevaluate gate position if not too close already
+            global y_distance_to_hole
+            if getHolePosition(pointcloud_x, pointcloud_y, rocks_x) is not None:
+                y_distance_to_hole = getHolePosition(pointcloud_x, pointcloud_y, rocks_x)
+                print "Gate detected at {}m above".format(y_distance_to_hole)          
+            else:
+                y_distance_to_hole = 0
+                print "Gate not found."
 
 if __name__ == '__main__':
     try:
