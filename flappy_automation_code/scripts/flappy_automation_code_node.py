@@ -122,7 +122,7 @@ def velCallback(msg):
     ### Position controller
     # reference is 0 distance to hole, so err_pos_y = y_distance_to_hole
 
-    ref_vel_y = Kp_pos*y_distance_to_hole
+    ref_vel_y = KP_pos*y_distance_to_hole # if no hole is detected, y_distance is 0 and ref_vel_y = 0
 
     ### Velocity controller 
     # sensors signal
