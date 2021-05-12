@@ -17,7 +17,7 @@ class Laser:
 
     def scan(self,startPoint,bitmap):
         pointcloud = []
-        raysToCast = xrange(self.resolution)
+        raysToCast = range(self.resolution)
 
         for i in raysToCast:
             # calc endpoint from angle and range
@@ -25,12 +25,12 @@ class Laser:
             endPoint = (int(math.cos(angle)*self.range + startPoint[0]),
                 int(-math.sin(angle)*self.range + startPoint[1]))
             #endpoint
-            pointcloud.append(self._raycast(startPoint,endPoint,bitmap))
+            pointcloud.append(self._raycast(*startPoint,*endPoint,bitmap))
         #publish the scan
         self._publish_laser_scan(pointcloud,startPoint)
         return pointcloud
 
-    def _raycast(self,(x0,y0),(x1,y1),bitmap):
+    def _raycast(self,x0,y0,x1,y1,bitmap):
         x0 = int(x0)
         y0 = int(y0)
         x1 = int(x1)
